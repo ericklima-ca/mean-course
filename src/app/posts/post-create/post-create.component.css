@@ -1,0 +1,10 @@
+mat-form-field,
+textarea {
+  width: 100%;
+}
+
+#reservado {
+  background-color: rgb(0, 209, 0);
+  color: white;
+  margin-right: 10px;
+}

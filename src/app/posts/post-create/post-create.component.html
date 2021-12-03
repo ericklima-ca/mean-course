@@ -1,0 +1,35 @@
+<mat-card>
+  <form (submit)="onAddPost(form)" #form="ngForm">
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        name="title"
+        ngModel
+        required
+        minlength="3"
+        placeholder="Post title"
+        #title="ngModel"
+      />
+      <mat-error *ngIf="title.invalid">Coloque um título.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea
+        matInput
+        cols="40"
+        name="content"
+        rows="6"
+        ngModel
+        required
+        minlength="3"
+        placeholder="Post content"
+        #content="ngModel"
+      ></textarea>
+      <mat-error *ngIf="content.invalid"
+        >Coloque um texto com pelo menos 50 dígitos.</mat-error
+      >
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Save post</button>
+  </form>
+</mat-card>
+<hr />
