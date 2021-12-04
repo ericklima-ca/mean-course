@@ -1,8 +1,12 @@
 const { resolveSoa } = require("dns");
 const express = require("express");
+const bodyParser = require('body-parser');
 const app = express();
 
-app.use((req, res, next) => {
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use((_req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -15,12 +19,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((_req, _res, next) => {
-  console.log("First middleware");
-  next();
-});
+app.post('/api/posts', async (req, res, next) => {
+  const post = await req.body;
+  console.log(post);
 
-app.use("/api/posts", (_req, res, _next) => {
+  res
+    .status(201)
+    .json(
+      {
+        message: "It's ok!"
+      }
+    )
+})
+
+app.get("/api/posts", (_req, res, _next) => {
   const posts = [
     {
       id: "1293192csas",
