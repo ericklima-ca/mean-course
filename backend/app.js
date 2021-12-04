@@ -1,6 +1,10 @@
-const { resolveSoa } = require("dns");
 const express = require("express");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
+
+const Post = require("./models/post");
+const conn = require("./db");
+conn();
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -19,37 +23,49 @@ app.use((_req, res, next) => {
   next();
 });
 
-app.post('/api/posts', async (req, res, next) => {
-  const post = await req.body;
-  console.log(post);
+app.post("/api/posts", async (req, res) => {
+  const { title, content } = req.body;
 
-  res
-    .status(201)
-    .json(
-      {
-        message: "It's ok!"
-      }
-    )
-})
-
-app.get("/api/posts", (_req, res, _next) => {
-  const posts = [
-    {
-      id: "1293192csas",
-      title: "The first",
-      content: "The first content",
-    },
-    {
-      id: "1casa9c123",
-      title: "The second",
-      content: "The second content",
-    },
-  ];
-
-  res.status(200).json({
-    message: "It's ok",
-    posts: posts,
+  const post = new Post({
+    title: title,
+    content: content,
   });
+  try {
+    let { _id } = await post.save();
+    console.log(post);
+    res.status(201).json({
+      message: "ok",
+      postId: _id,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.get("/api/posts", async (_req, res) => {
+  try {
+    const documents = await Post.find();
+    let responseData = {
+      message: "ok",
+      posts: documents,
+    };
+    res.status(200).json(responseData);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.delete("/api/posts/:id", async (req, res) => {
+  let { id } = req.params;
+  try {
+    await Post.deleteOne({ _id: id });
+    console.log("Deleted: " + id);
+    res.status(201).json({
+      message: "ok",
+    });
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 module.exports = app;
