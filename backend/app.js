@@ -18,7 +18,7 @@ app.use((_req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
+    "GET, POST, PATCH, PUT, DELETE, OPTIONS"
   );
   next();
 });
@@ -66,6 +66,17 @@ app.delete("/api/posts/:id", async (req, res) => {
   } catch (e) {
     console.log(e);
   }
+});
+
+app.put("/api/posts/:id", async (req, res, _next) => {
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content,
+  });
+  const result = await Post.updateOne({ _id: req.body.id }, post);
+  console.log(result);
+  res.status(200).json({ message: "Ok!" });
 });
 
 module.exports = app;

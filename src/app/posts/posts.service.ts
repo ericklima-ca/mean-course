@@ -3,6 +3,7 @@ import { Post } from './post.model';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { identifierModuleUrl } from '@angular/compiler';
 
 interface ResponseData {
   message: string;
@@ -40,6 +41,11 @@ export class PostsService {
     return this.postsUpdated.asObservable();
   }
 
+  getPost(postId: string | null): Post {
+    const post = { ...this.posts.find((post) => post.id === postId) } as Post;
+    return post;
+  }
+
   addPost(title: string, content: string): void {
     const post: Post = { id: null, title: title, content: content };
     this.http
@@ -59,6 +65,20 @@ export class PostsService {
       .delete<{ message: string }>('http://localhost:3000/api/posts/' + postId)
       .subscribe(() => {
         this.posts = this.posts.filter((post) => post.id !== postId);
+        this.postsUpdated.next([...this.posts]);
+      });
+  }
+
+  updatePost(postId: string | null, title: string, content: string) {
+    const post: Post = { id: postId, title: title, content: content };
+    console.log(postId);
+    this.http
+      .put('http://localhost:3000/api/posts/' + postId, post)
+      .subscribe((response) => {
+        const updatedPosts = [...this.posts];
+        const oldIndex = updatedPosts.findIndex((p) => p.id === post.id);
+        updatedPosts[oldIndex] = post;
+        this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
       });
   }

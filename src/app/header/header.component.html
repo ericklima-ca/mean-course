@@ -1,1 +1,13 @@
-<mat-toolbar>My First SPA</mat-toolbar>
+<mat-toolbar>
+  <span>
+    <a routerLink="">My First SPA</a>
+  </span>
+  <span class="spacer"></span>
+  <ul>
+    <li>
+      <a mat-button routerLinkActive="mat-accent" routerLink="create"
+        >New Post</a
+      >
+    </li>
+  </ul>
+</mat-toolbar>
