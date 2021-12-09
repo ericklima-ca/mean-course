@@ -1,31 +1,37 @@
+<mat-spinner *ngIf="isLoading"></mat-spinner>
 <mat-card>
-  <form (submit)="onSavePost(form)" #form="ngForm">
+  <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!isLoading">
     <mat-form-field>
       <input
         matInput
         type="text"
         name="title"
-        [ngModel]="post?.title"
-        required
-        minlength="3"
+        formControlName="title"
         placeholder="Post title"
-        #title="ngModel"
       />
-      <mat-error *ngIf="title.invalid">Coloque um título.</mat-error>
+      <mat-error *ngIf="form.get('title')?.invalid"
+        >Coloque um título.</mat-error
+      >
     </mat-form-field>
+    <div>
+      <button mat-stroked-button type="button" (click)="pickerButton.click()">
+        Pick image
+      </button>
+      <input type="file" #pickerButton (change)="onImagePicked($event)" />
+    </div>
+    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview">
+      <img [src]="imagePreview" alt="form.value.title" />
+    </div>
     <mat-form-field>
       <textarea
         matInput
         cols="40"
         name="content"
         rows="6"
-        [ngModel]="post?.content"
-        required
-        minlength="3"
+        formControlName="content"
         placeholder="Post content"
-        #content="ngModel"
       ></textarea>
-      <mat-error *ngIf="content.invalid"
+      <mat-error *ngIf="form.get('content')?.invalid"
         >Coloque um texto com pelo menos 50 dígitos.</mat-error
       >
     </mat-form-field>
